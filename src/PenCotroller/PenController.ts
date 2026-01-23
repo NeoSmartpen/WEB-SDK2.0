@@ -61,8 +61,8 @@ export default class PenController {
 
   // Error process
   /**
-   * 도트 에러 발생 시 메시지 출력을 위한 함수
-   * - 해당 함수가 기능하기 위해서는 onMessage를 구현해야 한다.
+   * Emits an error message when a dot error is detected.
+   * - onMessage must be implemented for this method to take effect.
    * @param {any} args
    */
   onErrorDetected(args: DotErrorInfo) {
@@ -81,7 +81,7 @@ export default class PenController {
   }
 
   /**
-   * 프로토콜 버전에 따라 펜에 요청하는 함수를 분기 실행하는 함수
+   * Routes a request to the appropriate implementation based on the protocol version.
    * @param {any} requestV1
    * @param {any} requestV2
    * @returns
@@ -104,7 +104,7 @@ export default class PenController {
   // MARK: Request
   //Request Version Info
   /**
-   * 현재 버전을 요청하는 함수
+   * Returns the latest parsed version info.
    * @returns
    */
   RequestVersionInfo() {
@@ -113,7 +113,7 @@ export default class PenController {
 
   // Request
   /**
-   * 펜에 설정된 비밀번호를 변경 요청하는 함수
+   * Requests a password change on the pen.
    * @param {string} oldone
    * @param {string} [newone=""]
    * @memberof PenController
@@ -134,7 +134,7 @@ export default class PenController {
   }
 
   /**
-   * 펜에 비밀번호를 전송하는 함수
+   * Sends a password to the pen.
    * @param {string} password
    */
   InputPassword(password: string) {
@@ -145,7 +145,7 @@ export default class PenController {
   }
 
   /**
-   * 펜에 대한 각종 설정 확인을 요청하는 함수
+   * Requests pen setting information.
    */
   RequestPenStatus() {
     this.Request(
@@ -155,16 +155,16 @@ export default class PenController {
   }
 
   /**
-   * 펜 설정 중 시각을 변경 요청하는 함수
-   * - 1970년 1월 1일부터 millisecond tick (지금은 현재 시각으로 변경)
+   * Requests to update the pen's timestamp.
+   * - Milliseconds since Jan 1, 1970 (currently sets to the current time).
    */
   SetRtcTime() {
     this.Request(null, () => this.mClientV2.ReqSetupTime());
   }
 
   /**
-   * 펜 설정 중 자동종료 시간을 변경 요청하는 함수
-   * 분 단위 (v2.17 = 5 ~ 3600 // v2.18 = 1 ~ 3600)
+   * Requests to update the auto power-off time.
+   * In minutes (v2.17 = 5 ~ 3600 // v2.18 = 1 ~ 3600).
    * @param {number} minute
    */
   SetAutoPowerOffTime(minute: number) {
@@ -175,7 +175,7 @@ export default class PenController {
   }
 
   /**
-   * 펜 설정 중 펜 뚜껑을 닫을 경우 전원이 꺼지는 기능을 변경 요청하는 함수
+   * Requests to enable/disable power-off when the pen cap is closed.
    * @param {boolean} enable - on / off
    */
   SetPenCapPowerOnOffEnable(enable: boolean) {
@@ -183,7 +183,7 @@ export default class PenController {
   }
 
   /**
-   * 펜 설정 중 펜 뚜껑 혹은 펜 필기 시 자동으로 전원이 켜지는 기능을 변경 요청하는 함수
+   * Requests to enable/disable auto power-on when opening the cap or starting to write.
    * @param {boolean} enable - on / off
    */
   SetAutoPowerOnEnable(enable: boolean) {
@@ -194,7 +194,7 @@ export default class PenController {
   }
 
   /**
-   * 펜 설정 중 비프음 기능을 변경 요청하는 함수
+   * Requests to enable/disable beep sound.
    * @param {boolean} enable - on / off
    */
   SetBeepSoundEnable(enable: boolean) {
@@ -205,8 +205,8 @@ export default class PenController {
   }
 
   /**
-   * 펜 설정 중 호버 모드 기능을 변경 요청하는 함수
-   * - 호버기능 : 펜의 위치를 penDown 전에 미리 가늠해 볼 수 있도록 시각적인 dot를 표시하는 기능
+   * Requests to enable/disable hover mode.
+   * - Hover mode displays visual dots to preview the pen position before pen-down.
    * @param {boolean} enable - on / off
    */
   SetHoverEnable(enable: boolean) {
@@ -217,7 +217,7 @@ export default class PenController {
   }
 
   /**
-   * 펜 설정 중 오프라인 저장 기능을 변경 요청하는 함수
+   * Requests to enable/disable offline data storage.
    * @param {boolean} enable - on / off
    */
   SetOfflineDataEnable(enable: boolean) {
@@ -225,7 +225,7 @@ export default class PenController {
   }
 
   /**
-   * 펜 설정 중 펜 LED 색을 변경 요청하는 함수
+   * Requests to change the pen LED color.
    * @param {number} color - argb
    */
   SetColor(color: number) {
@@ -236,9 +236,9 @@ export default class PenController {
   }
 
   /**
-   * 펜 설정 중 펜의 필압 민감도를 변경 요청하는 함수
-   * - FSR 필압 센서가 달린 모델에서만 이용
-   * @param {number} step - 0 ~ 4 ( 0이 가장 민감 )
+   * Requests to change pen pressure sensitivity.
+   * - Available only on models with an FSR pressure sensor.
+   * @param {number} step - 0 ~ 4 (0 is most sensitive)
    */
   SetSensitivity(step: number) {
     this.Request(
@@ -248,7 +248,7 @@ export default class PenController {
   }
 
   /**
-   * 펜 설정 중 펜의 디스크를 초기화 요청하는 함수
+   * Requests to initialize the pen disk.
    */
   RequestInitPenDisk() {
     this.Request(
@@ -258,10 +258,10 @@ export default class PenController {
   }
 
   /**
-   * 펜의 실시간 필기 데이터에 대한 전송을 요청하는 함수
+   * Requests real-time stroke data transmission for the specified notes.
    * @param {array} sections
    * @param {array} owners
-   * @param {(array | null)}notes - null일 경우 노트를 구분하지 않는다.
+   * @param {(array | null)}notes - if null, do not filter by note
    */
   RequestAvailableNotes(sections: number[], owners: number[], notes: number[] | null) {
     this.Request(
@@ -273,8 +273,8 @@ export default class PenController {
   // Offline List
   // setion or owner  = null : All Note
   /**
-   * 펜에 저장된 오프라인 필기 데이터의 종이 정보(note)를 요청하는 함수
-   * - section, owner 모두 0일 경우 저장된 모든 note ID 리스트 (최대 64개)를 요청한다.
+   * Requests the offline note list stored on the pen.
+   * - If both section and owner are 0, requests all stored note IDs (max 64).
    * @param {number} section
    * @param {number} owner
    */
@@ -286,8 +286,8 @@ export default class PenController {
   }
 
   /**
-   * 펜에 저장된 오프라인 필기 데이터의 종이 정보(page)를 요청하는 함수
-   * - section, owner, note 와 일치하는 하나의 노트의 page ID 리스트 (최대 128개)를 요청한다.
+   * Requests the offline page list stored on the pen.
+   * - Requests page IDs (max 128) for the note matching section, owner, and note.
    * @param {number} section
    * @param {number} owner
    * @param {number} note
@@ -301,12 +301,12 @@ export default class PenController {
 
   // Offline Data
   /**
-   * 펜에 저장된 오프라인 필기 데이터를 한 note ID 혹은 다수의 page ID로 요청하는 함수
+   * Requests offline stroke data by note ID or multiple page IDs.
    * @param {number} section
    * @param {number} owner
    * @param {number} note
-   * @param {boolean} deleteOnFinished - true일 경우 전송한 데이터 삭제, false일 경우 전송한 데이터 삭제 안함
-   * @param {array} pages - 빈 배열일 경우 노트 내 모든 page를 요청
+   * @param {boolean} deleteOnFinished - true to delete transmitted data, false to keep it
+   * @param {array} pages - if empty array, requests all pages in the note
    * @returns
    */
   RequestOfflineData(section: number, owner: number, note: number, deleteOnFinished: boolean = true, pages: any = []) {
@@ -319,8 +319,8 @@ export default class PenController {
   }
 
   /**
-   * 펜에 저장된 오프라인 필기 데이터에 대한 삭제를 요청하는 함수
-   * - 노트 단위 삭제, 최대 64개
+   * Requests deletion of offline data stored on the pen.
+   * - Deletes by note ID, up to 64 notes.
    * @param {number} section
    * @param {number} owner
    * @param {array} notes
@@ -336,7 +336,7 @@ export default class PenController {
 
   // Firmware Update
   /**
-   * 펜에 설치된 펌웨어를 업그레이드하기 위해 펜에게 질의하는 함수
+   * Initiates a firmware update by querying the pen.
    * @param {File} file
    * @param {string} version
    * @param {boolean} isCompressed
@@ -351,7 +351,7 @@ export default class PenController {
   }
 
   /**
-   * 펜에 펌웨어 데이터를 업로드하는 함수
+   * Uploads firmware data to the pen.
    * @param {number} offset
    * @param {Uint8Array} data
    * @param {number} status
@@ -364,8 +364,8 @@ export default class PenController {
   }
 
   /**
-   * 펜에 프로파일 생성을 요청하는 함수
-   * - 프로파일은 네오랩을 통해 인증받은 뒤에 사용가능하기에, 현재는 고정값을 이용
+   * Requests profile creation on the pen.
+   * - Profiles require authorization via Neolab; currently uses fixed values.
    * @param {string} name
    * @param {string} password
    */
@@ -377,8 +377,8 @@ export default class PenController {
   };
 
   /**
-   * 펜에 설정된 프로파일 제거를 요청하는 함수
-   * - 프로파일은 네오랩을 통해 인증받은 뒤에 사용가능하기에, 현재는 고정값을 이용
+   * Requests profile deletion on the pen.
+   * - Profiles require authorization via Neolab; currently uses fixed values.
    * @param {string} name
    * @param {string} password
    */
@@ -390,8 +390,8 @@ export default class PenController {
   };
 
   /**
-   * 펜에 설정된 프로파일 정보를 요청하는 함수
-   * - 프로파일은 네오랩을 통해 인증받은 뒤에 사용가능하기에, 현재는 고정값을 이용
+   * Requests profile information from the pen.
+   * - Profiles require authorization via Neolab; currently uses fixed values.
    * @param {string} name
    */
   RequestProfileInfo = (name: string) => {
@@ -402,8 +402,8 @@ export default class PenController {
   };
 
   /**
-   * 펜에 설정된 프로파일 내 데이터 작성을 요청하는 함수
-   * - 프로파일은 네오랩을 통해 인증받은 뒤에 사용가능하기에, 현재는 고정값을 이용
+   * Requests writing profile data on the pen.
+   * - Profiles require authorization via Neolab; currently uses fixed values.
    * @param {string} name
    * @param {string} password
    * @param {Array} keys
@@ -421,8 +421,8 @@ export default class PenController {
   };
 
   /**
-   * 펜에 설정된 프로파일 내 데이터 정보를 요청하는 함수
-   * - 프로파일은 네오랩을 통해 인증받은 뒤에 사용가능하기에, 현재는 고정값을 이용
+   * Requests reading profile data from the pen.
+   * - Profiles require authorization via Neolab; currently uses fixed values.
    * @param {string} name
    * @param {Array} keys
    */
@@ -434,8 +434,8 @@ export default class PenController {
   };
 
   /**
-   * 펜에 설정된 프로파일 내 데이터 제거를 요청하는 함수
-   * - 프로파일은 네오랩을 통해 인증받은 뒤에 사용가능하기에, 현재는 고정값을 이용
+   * Requests deletion of profile data on the pen.
+   * - Profiles require authorization via Neolab; currently uses fixed values.
    * @param {string} name
    * @param {string} password
    * @param {Array} keys

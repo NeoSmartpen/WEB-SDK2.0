@@ -45,7 +45,7 @@ class Packet {
   }
 
   /**
-   * 패킷에서 1바이트 크기의 값을 반환받는 함수
+   * Reads a 1-byte value from the packet.
    * @returns
    */
   GetByte() {
@@ -53,7 +53,7 @@ class Packet {
   }
 
   /**
-   * 패킷에서 원하는 바이트 크기만큼의 값을 반환하고, 바이트 위치값을 수정하는 함수
+   * Reads bytes from the packet and advances the read index.
    * @param {(number | null)} arg
    * @returns
    */
@@ -73,7 +73,7 @@ class Packet {
   }
 
   /**
-   * 패킷에서 4바이트 크기의 값을 반환받는 함수
+   * Reads a 4-byte integer value from the packet.
    * @returns
    */
   GetInt() {
@@ -81,7 +81,7 @@ class Packet {
   }
 
   /**
-   * 패킷에서 2바이트 크기의 값을 반환받는 함수
+   * Reads a 2-byte integer value from the packet.
    * @returns
    */
   GetShort() {
@@ -91,7 +91,7 @@ class Packet {
   }
 
   /**
-   * 패킷에서 8바이트 크기의 값을 반환받는 함수
+   * Reads an 8-byte integer value from the packet.
    * @returns
    */
   GetLong() {
@@ -99,7 +99,7 @@ class Packet {
   }
 
   /**
-   * 패킷에서 원하는 바이트 크기만큼의 값을 반환받는 함수
+   * Reads a fixed-length string from the packet.
    * @param {number} length
    * @returns
    */

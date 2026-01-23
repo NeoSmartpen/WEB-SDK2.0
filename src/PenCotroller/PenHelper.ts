@@ -47,7 +47,7 @@ class PenHelper {
   };
 
   isConnectedOrConnecting = (device: BluetoothDevice) => {
-    return this.pens.some((pen) => pen.device.id === device.id) || this.connectingQueue.includes(device.id);
+    return this.pens.some((pen) => pen.device?.id === device.id) || this.connectingQueue.includes(device.id);
   };
 
   addDeviceToConnectingQueue = (device: BluetoothDevice) => {
@@ -60,6 +60,10 @@ class PenHelper {
 
   debugMode = (bool: boolean) => {
     NLog.setDebug(bool);
+  };
+
+  getPenByMacAddress = (macAddress: string): PenController | undefined => {
+    return this.pens.find((pen) => pen.info?.MacAddress === macAddress);
   };
 
   /**

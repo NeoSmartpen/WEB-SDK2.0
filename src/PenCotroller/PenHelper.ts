@@ -73,7 +73,19 @@ class PenHelper {
     this.mac = mac;
     const dot = args;
 
-    const pageInfo = dot.pageInfo;
+    const pageInfo: any = dot?.pageInfo ?? {
+      section: dot?.section,
+      owner: dot?.owner,
+      book: dot?.book ?? dot?.note,
+      page: dot?.page,
+    };
+    const dotType: number | undefined = dot?.dotType ?? dot?.DotType;
+
+    const section = pageInfo?.section ?? dot?.section ?? 0;
+    const owner = pageInfo?.owner ?? dot?.owner ?? 0;
+    const note = pageInfo?.note ?? pageInfo?.book ?? dot?.note ?? dot?.book ?? 0;
+    const page = pageInfo?.page ?? dot?.page ?? 0;
+
     this.isPlate = false;
     if (this.isPlatePaper(pageInfo)) {
       // platePage 인지 확인 후 isPlate 값 설정
@@ -81,30 +93,30 @@ class PenHelper {
     }
     dot.isPlate = this.isPlate;
 
-    if (dot.DotType === 0) {
+    if (dotType === 0) {
       // Down
       if (
-        this.d.section !== dot.section ||
-        this.d.owner !== dot.owner ||
-        this.d.note !== dot.note ||
-        this.d.page !== dot.page
+        this.d.section !== section ||
+        this.d.owner !== owner ||
+        this.d.note !== note ||
+        this.d.page !== page
       ) {
         if (this.pageCallback) {
           this.pageCallback(dot);
+          this.dotCallback = null;
         }
-        this.d = dot;
-        this.dotCallback = null;
+        this.d = { section, owner, note, page };
       }
-    } else if (dot.DotType === 1) {
+    } else if (dotType === 1) {
       // Move
-    } else if (dot.DotType === 2) {
+    } else if (dotType === 2) {
       // Up
     }
 
     if (this.dotCallback) {
       this.dotCallback(mac, dot);
     } else {
-      const id = dot.section + "_" + dot.owner + "_" + dot.note + "_" + dot.page;
+      const id = section + "_" + owner + "_" + note + "_" + page;
       if (this.dotStorage[id]) {
         this.dotStorage[id].push(dot);
       } else {
@@ -279,7 +291,7 @@ class PenHelper {
           NLog.log("write Error", err);
           if (err instanceof DOMException) {
             setTimeout(() => {
-              write.writeValue(data);
+              write.writeValue(data as unknown as BufferSource);
             }, 500);
           }
         });

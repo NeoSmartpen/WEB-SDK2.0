@@ -3,7 +3,7 @@ import { Packet } from "../PenCotroller/Packet";
 import { toHexString, GetSectionOwner } from "../Util/ByteUtil";
 
 /**
- * 펜에서 반환된, 디바이스 버전(정보) 패킷을 파싱하는 함수
+ * Parses a device version/info packet returned from the pen.
  * @param {Packet} packet
  * @returns
  */
@@ -41,7 +41,7 @@ export function VersionInfo(packet: Packet) {
 }
 
 /**
- * 펜에서 반환된, 펜 설정 정보 패킷을 파싱하는 함수
+ * Parses a pen setting info packet returned from the pen.
  * @param {Packet} packet
  * @returns
  */
@@ -96,7 +96,7 @@ export function SettingInfo(packet: Packet) {
 }
 
 /**
- * 펜에서 반환된, 펜 설정 변경의 성공여부를 파싱하는 함수
+ * Parses the result of a pen setting change response returned from the pen.
  * @param {Packet} packet
  * @returns {{number, boolean}}
  */
@@ -107,9 +107,9 @@ export function SettingChange(packet: Packet) {
 }
 
 /**
- * 펜에서 반환된, 입력된 비밀번호 결과 값을 파싱하는 함수
+ * Parses a password response packet returned from the pen.
  * @param {Packet} packet
- * @returns {{number, number, number}} - status: 0 = 비밀번호 필요 / 1 = 비밀번호 불요 or 비밀번호 성공 / 2 = 입력한도초과리셋 / 3 = 오류
+ * @returns {{number, number, number}} - status: 0 = password required / 1 = no password required or password accepted / 2 = retry limit exceeded (reset) / 3 = error
  */
 export function Password(packet: Packet) {
   let status = packet.GetByte();
@@ -119,9 +119,9 @@ export function Password(packet: Packet) {
 }
 
 /**
- * 펜에서 반환된, 패스워드 변경 결과 값을 파싱하는 함수
+ * Parses a password change response packet returned from the pen.
  * @param {Packet} packet
- * @returns {{number, number, number}} - status: 0 = 성공 / 1 = 기존비밀번호 불일치 / 2 = 입력한도초과리셋 / 3 = 오류
+ * @returns {{number, number, number}} - status: 0 = success / 1 = current password mismatch / 2 = retry limit exceeded (reset) / 3 = error
  */
 export function PasswordChange(packet: Packet) {
   let RetryCount = packet.GetByte();
@@ -131,7 +131,7 @@ export function PasswordChange(packet: Packet) {
 }
 
 /**
- * PDS용 좌표 데이터 파싱하는 함수
+ * Parses coordinate data for PDS.
  * @param {Packet} packet
  * @returns
  */
@@ -148,7 +148,7 @@ export function PDS(packet: Packet) {
 }
 
 /**
- * 펜에서 반환된, 오프라인 데이터의 종이정보(section, owner, note) 리스트를 파싱하는 함수
+ * Parses a list of offline note info (section, owner, note) returned from the pen.
  * @param {Packet} packet
  * @returns {array}
  */
@@ -166,7 +166,7 @@ export function NoteList(packet: Packet) {
 }
 
 /**
- * 펜에서 반환된, 오프라인 데이터의 종이정보(page) 리스트를 파싱하는 함수
+ * Parses a list of offline page info returned from the pen.
  * @param {Packet} packet
  * @returns {array}
  */
@@ -191,9 +191,9 @@ export function PageList(packet: Packet) {
 }
 
 /**
- * 펜에서 반환된, 프로파일 데이터를 파싱하는 함수
+ * Parses profile data returned from the pen.
  * @param {Packet} packet
- * @returns - status: 0 = 성공 / 1 = 실패 / 10 = 프로파일 이미 존재 / 11 = 프로파일 없음 / 21 = 프로파일 내 key 없음 / 30 = 권한없음 (비밀번호 틀림) / 40 = 버퍼 크기 맞지 않음
+ * @returns - status: 0 = success / 1 = failure / 10 = profile already exists / 11 = profile not found / 21 = key not found in profile / 30 = unauthorized (wrong password) / 40 = invalid buffer size
  */
 export const ProfileData = (packet: Packet) => {
   const profileName = packet.GetString(8);

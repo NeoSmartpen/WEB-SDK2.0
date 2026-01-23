@@ -185,7 +185,7 @@ export default class PUIController {
   }
 
   /**
-   * 플레이트와 같이 항상 고정된 SOBP 를 가지고 상품화된 제품(개수가 적다. 그렇기에 SDK 내 저장 가능)에 관한 nproj 를 파싱하고 저장하는 함수
+   * Parses and stores nproj data for predefined products with fixed SOBP (e.g., Plate).
    */
   private readPredefinedSymbolsByXML = async () => {
     for (const url of predefinedPuiGroup) {
@@ -215,9 +215,9 @@ export default class PUIController {
   // };
 
   /**
-   * 수없이 많은 노트와 같이 서버에 저장하고 받아와야하는 제품에 관한 nproj 를 파싱하고 저장하는 함수
-   * @param nprojJson
-   * @param page 해당 노트의 특정 페이지
+   * Parses and stores nproj data for products that must be stored and fetched from a server (e.g., many-note products).
+   * @param url URL of the nproj file
+   * @param page a specific page number of the note
    */
   private readPageSymbols = async (url: string, page: number) => {
     const { symbols, resources } = await this.getPuiXML(url);

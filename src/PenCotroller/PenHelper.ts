@@ -271,7 +271,7 @@ class PenHelper {
     // Write Set
     controller.addWrite((data) => {
       write
-        .writeValue(data)
+        .writeValue(data as unknown as BufferSource)
         .then(() => {
           NLog.log("write success CMD: ", "0x" + data[1].toString(16), data[1]);
         })
@@ -291,6 +291,7 @@ class PenHelper {
     device.addEventListener("gattserverdisconnected", this.onDisconnected.bind(this, controller));
 
     this.pens.push(controller);
+    this.writecharacteristic = true;
   };
 
   /**
@@ -302,6 +303,7 @@ class PenHelper {
   onDisconnected = (controller: PenController, event: any) => {
     NLog.log("device disconnect", controller, event);
     this.pens = this.pens.filter((p: any) => p !== controller);
+    this.writecharacteristic = this.pens.length > 0;
     controller.OnDisconnected();
   };
 

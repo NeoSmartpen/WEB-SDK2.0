@@ -43,7 +43,29 @@ class PenHelper {
    * @returns {boolean}
    */
   isConnected = () => {
-    return this.writecharacteristic ? true : false;
+    return this.isAnyConnected();
+  };
+
+  /**
+   * @returns {boolean} true if any pen is connected
+   */
+  isAnyConnected = () => {
+    return this.pens.some((pen) => pen.device?.gatt?.connected);
+  };
+
+  /**
+   * @param {PenController | BluetoothDevice | string} target pen controller, device, or mac address
+   * @returns {boolean} true if the target pen is connected
+   */
+  isPenConnected = (target: PenController | BluetoothDevice | string) => {
+    if (typeof target === "string") {
+      return this.getPenByMacAddress(target)?.device?.gatt?.connected ?? false;
+    }
+
+    const device: BluetoothDevice | undefined =
+      (target as PenController).device ?? (target as BluetoothDevice);
+
+    return device?.gatt?.connected ?? false;
   };
 
   isConnectedOrConnecting = (device: BluetoothDevice) => {
@@ -315,7 +337,7 @@ class PenHelper {
     device.addEventListener("gattserverdisconnected", this.onDisconnected.bind(this, controller));
 
     this.pens.push(controller);
-    this.writecharacteristic = true;
+    this.writecharacteristic = this.isAnyConnected();
   };
 
   /**
@@ -327,7 +349,7 @@ class PenHelper {
   onDisconnected = (controller: PenController, event: any) => {
     NLog.log("device disconnect", controller, event);
     this.pens = this.pens.filter((p: any) => p !== controller);
-    this.writecharacteristic = this.pens.length > 0;
+    this.writecharacteristic = this.isAnyConnected();
     controller.OnDisconnected();
   };
 

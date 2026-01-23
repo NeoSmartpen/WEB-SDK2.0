@@ -38,8 +38,8 @@ export default class PenRequestV2 {
   // Request
   //
   /**
-   * 펜에 대한 버전(정보)를 요청하기 위한 버퍼를 만들고 펜에 전송하는 함수
-   * - 펜과 연결 성공 시 가장 먼저 수행하는 작업
+   * Builds and sends a request buffer to fetch the pen version/info.
+   * - First step after a successful pen connection.
    */
   ReqVersion() {
     let bf = new ByteUtil();
@@ -72,7 +72,7 @@ export default class PenRequestV2 {
   // Password
   //
   /**
-   * 펜에 설정된 비밀번호를 변경 요청하기 위한 버퍼를 만들고 펜에 전송하는 함수
+   * Builds and sends a request buffer to change the password set on the pen.
    * @param {string} oldPassword
    * @param {string} newPassword
    * @returns
@@ -100,7 +100,7 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜에 비밀번호 버퍼를 만들고 전송하는 함수
+   * Builds and sends a password input buffer to the pen.
    * @param {string} password
    * @returns
    */
@@ -117,7 +117,7 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜에 대한 각종 설정 확인을 요청하기 위한 버퍼를 만들고 전송하는 함수
+   * Builds and sends a request buffer to query pen settings.
    * @returns
    */
   ReqPenStatus() {
@@ -129,8 +129,8 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜에 대한 각종 설정 변경을 요청하기 위한 버퍼를 만들고 전송하는 함수
-   * @param {number} stype - SettingType, 변경하고자 하는 설정
+   * Builds and sends a request buffer to change a pen setting.
+   * @param {number} stype - SettingType, setting to change
    * @param {any} value
    * @returns
    */
@@ -198,8 +198,8 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜 설정 중 시각을 변경하기 위한 함수
-   * - 1970년 1월 1일부터 millisecond tick (지금은 현재 시각으로 변경)
+   * Requests to update the pen timestamp to the current time.
+   * - Milliseconds since Jan 1, 1970.
    * @returns
    */
   ReqSetupTime() {
@@ -209,8 +209,8 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜 설정 중 자동종료 시간을 변경하기 위한 함수
-   * 분 단위 (v2.17 = 5 ~ 3600 // v2.18 = 1 ~ 3600)
+   * Requests to update the auto shutdown time.
+   * In minutes (v2.17 = 5 ~ 3600 // v2.18 = 1 ~ 3600).
    * @param {number} minute
    * @returns
    */
@@ -219,7 +219,7 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜 설정 중 펜 뚜껑을 닫을 경우 전원이 꺼지는 기능을 on / off 로 변경하기 위한 함수
+   * Requests to enable/disable power-off when the pen cap is closed.
    * @param {boolean} enable - on / off
    * @returns
    */
@@ -228,7 +228,7 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜 설정 중 펜 뚜껑 혹은 펜 필기 시 자동으로 전원이 켜지는 기능을 on / off 로 변경하기 위한 함수
+   * Requests to enable/disable auto power-on when opening the cap or starting to write.
    * @param {boolean} enable - on / off
    * @returns
    */
@@ -237,7 +237,7 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜 설정 중 비프음 기능을 on / off 로 변경하기 위한 함수
+   * Requests to enable/disable beep sound.
    * @param {boolean} enable - on / off
    * @returns
    */
@@ -246,8 +246,8 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜 설정 중 호버 모드 기능을 on / off 로 변경하기 위한 함수
-   * - 호버기능 : 펜의 위치를 penDown 전에 미리 가늠해 볼 수 있도록 시각적인 dot를 표시하는 기능
+   * Requests to enable/disable hover mode.
+   * - Hover mode displays visual dots to preview the pen position before pen-down.
    * @param {boolean} enable - on / off
    * @returns
    */
@@ -256,7 +256,7 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜 설정 중 오프라인 저장 기능을 on / off 로 변경하기 위한 함수
+   * Requests to enable/disable offline data storage.
    * @param {boolean} enable - on / off
    * @returns
    */
@@ -265,7 +265,7 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜 설정 중 펜 LED 색을 변경하기 위한 함수
+   * Requests to change the pen LED color.
    * @param {number} color - argb
    * @returns
    */
@@ -274,9 +274,9 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜 설정 중 펜의 필압 민감도를 변경하기 위한 함수
-   * - FSR 필압 센서가 달린 모델에서만 이용
-   * @param {number} step - 0 ~ 4 ( 0이 가장 민감 )
+   * Requests to change pen pressure sensitivity.
+   * - Available only on models with an FSR pressure sensor.
+   * @param {number} step - 0 ~ 4 (0 is most sensitive)
    * @returns
    */
   ReqSetupPenSensitivity(step: number) {
@@ -284,7 +284,7 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜 설정 중 USB 모드 설정을 변경하기 위한 함수
+   * Requests to change the USB mode setting.
    * @param {number} mode - 0 or 1
    * @returns
    */
@@ -293,7 +293,7 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜 설정 중 다운 샘플링 기능을 on / off 로 변경하기 위한 함수
+   * Requests to enable/disable down sampling.
    * @param {boolean} enable - on / off
    * @returns
    */
@@ -302,7 +302,7 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜 설정 중 블루투스 로컬 네임을 변경하기 위한 함수
+   * Requests to change the Bluetooth local name.
    * @param {string} btLocalName
    * @returns
    */
@@ -311,9 +311,9 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜 설정 중 펜의 필압 민감도를 변경하기 위한 함수
-   * - FSC 필압 센서가 달린 모델에서만 이용
-   * @param {number} step - 0 ~ 4 ( 0이 가장 민감 )
+   * Requests to change pen pressure sensitivity (FSC).
+   * - Available only on models with an FSC pressure sensor.
+   * @param {number} step - 0 ~ 4 (0 is most sensitive)
    * @returns
    */
   ReqSetupPenFscSensitivity(step: number) {
@@ -321,8 +321,8 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜 설정 중 펜의 데이터 전송 방식을 변경하기 위한 함수
-   * - 현재 사용하지 않음
+   * Requests to change the pen data transmission type.
+   * - Currently unused.
    * @param {number} type - 0 or 1
    * @returns
    */
@@ -331,8 +331,8 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜 설정 중 펜의 비프음과 LED를 변경하기 위한 함수
-   * F90 펜 전용
+   * Requests to change the pen beep and LED settings.
+   * For F90 pens only.
    * @returns
    */
   ReqBeepAndLight() {
@@ -340,7 +340,7 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜 설정 중 펜의 디스크를 초기화하기 위한 함수
+   * Requests to initialize the pen disk.
    * @returns
    */
   ReqInitPenDisk() {
@@ -348,7 +348,7 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 현재 지원 가능한 펜인지 버전을 비교해 확인하는 함수
+   * Checks whether the connected pen supports profiles by comparing protocol versions.
    * @returns
    */
   IsSupportPenProfile() {
@@ -363,10 +363,10 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜의 실시간 필기 데이터에 대한 전송을 요청하기 위한 버퍼를 만들고 전송하는 함수
+   * Builds and sends a request buffer to enable real-time stroke data transmission.
    * @param {array} sectionIds
    * @param {array} ownerIds
-   * @param {(array | null)} noteIds - null일 경우 노트를 구분하지 않는다.
+   * @param {(array | null)} noteIds - if null, do not filter by note
    * @returns {boolean}
    */
   ReqAddUsingNotes(sectionIds: number[], ownerIds: number[], noteIds: number[] | null) {
@@ -397,8 +397,8 @@ export default class PenRequestV2 {
   // MARK: Offline Data
   //
   /**
-   * 펜에 저장된 오프라인 필기 데이터의 종이 정보(note)를 요청하기 위한 버퍼를 만들고 전송하는 함수
-   * - section, owner 모두 0일 경우 저장된 모든 note ID 리스트 (최대 64개)를 요청한다.
+   * Builds and sends a request buffer to fetch offline note info stored on the pen.
+   * - If both section and owner are 0, requests all stored note IDs (max 64).
    * @param {number} section
    * @param {number} owner
    * @returns
@@ -421,8 +421,8 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜에 저장된 오프라인 필기 데이터의 종이 정보(page)를 요청하기 위한 버퍼를 만들고 전송하는 함수
-   * - section, owner, note 와 일치하는 하나의 노트의 page ID 리스트 (최대 128개)를 요청한다.
+   * Builds and sends a request buffer to fetch offline page info stored on the pen.
+   * - Requests page IDs (max 128) for the note matching section, owner, and note.
    * @param {number} section
    * @param {number} owner
    * @param {number} note
@@ -443,12 +443,12 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜에 저장된 오프라인 필기 데이터를 한 note ID 혹은 다수의 page ID로 요청하기 위한 버퍼를 만들고 전송하는 함수
+   * Builds and sends a request buffer to fetch offline stroke data by note ID or multiple page IDs.
    * @param {number} section
    * @param {number} owner
    * @param {number} note
-   * @param {boolean} deleteOnFinished - true일 경우 전송한 데이터 삭제, false일 경우 전송한 데이터 삭제 안함
-   * @param {array} pages - 빈 배열일 경우 노트 내 모든 page를 요청
+   * @param {boolean} deleteOnFinished - true to delete transmitted data, false to keep it
+   * @param {array} pages - if empty array, requests all pages in the note
    * @returns
    */
   ReqOfflineData(section: number, owner: number, note: number, deleteOnFinished = true, pages: number[] = []) {
@@ -476,8 +476,8 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜에 저장된 오프라인 필기 데이터에 대한 삭제를 요청하기 위한 버퍼를 만들고 전송하는 함수
-   * - 노트 단위 삭제, 최대 64개
+   * Builds and sends a request buffer to delete offline data stored on the pen.
+   * - Deletes by note ID, up to 64 notes.
    * @param {number} section
    * @param {number} owner
    * @param {array} notes
@@ -502,7 +502,7 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜에 설치된 펌웨어를 업그레이드하기 위해 펜에게 질의하기 위한 버퍼를 만들고 전송하는 함수
+   * Builds and sends a request buffer to initiate a firmware upgrade.
    * @param {File} file
    * @param {string} version
    * @param {boolean} isCompressed
@@ -586,7 +586,7 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜에서 승인한 펌웨어 업그레이드에 따라 알맞는 펌웨어 데이터를 업로드 하기 위한 버퍼를 만들고 전송하는 함수
+   * Builds and sends a request buffer to upload firmware data according to the pen-approved upgrade flow.
    * @param {number} offset
    * @param {Uint8Array} data
    * @param {number} status
@@ -628,8 +628,8 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 펜에 프로파일 생성을 요청하기 위한 버퍼를 만들고 전송하는 함수
-   * - 프로파일은 네오랩을 통해 인증받은 뒤에 사용가능하기에, 현재는 고정값을 이용
+   * Builds and sends a request buffer to create a profile on the pen.
+   * - Profiles require authorization via Neolab; currently uses fixed values.
    * @param {string} name
    * @param {string} password
    * @returns
@@ -663,8 +663,8 @@ export default class PenRequestV2 {
   };
 
   /**
-   * 펜에 설정된 프로파일 제거를 요청하기 위한 버퍼를 만들고 전송하는 함수
-   * - 프로파일은 네오랩을 통해 인증받은 뒤에 사용가능하기에, 현재는 고정값을 이용
+   * Builds and sends a request buffer to delete a profile from the pen.
+   * - Profiles require authorization via Neolab; currently uses fixed values.
    * @param {string} name
    * @param {string} password
    * @returns
@@ -693,8 +693,8 @@ export default class PenRequestV2 {
   };
 
   /**
-   * 펜에 설정된 프로파일 정보를 요청하기 위한 버퍼를 만들고 전송하는 함수
-   * - 프로파일은 네오랩을 통해 인증받은 뒤에 사용가능하기에, 현재는 고정값을 이용
+   * Builds and sends a request buffer to request profile information from the pen.
+   * - Profiles require authorization via Neolab; currently uses fixed values.
    * @param {string} name
    * @returns
    */
@@ -721,8 +721,8 @@ export default class PenRequestV2 {
   };
 
   /**
-   * 펜에 설정된 프로파일 내 데이터 작성을 요청하기 위한 버퍼를 만들고 전송하는 함수
-   * - 프로파일은 네오랩을 통해 인증받은 뒤에 사용가능하기에, 현재는 고정값을 이용
+   * Builds and sends a request buffer to write profile data on the pen.
+   * - Profiles require authorization via Neolab; currently uses fixed values.
    * @param {string} name
    * @param {string} password
    * @param {Array} keys
@@ -781,8 +781,8 @@ export default class PenRequestV2 {
   };
 
   /**
-   * 펜에 설정된 프로파일 내 데이터 정보를 요청하기 위한 버퍼를 만들고 전송하는 함수
-   * - 프로파일은 네오랩을 통해 인증받은 뒤에 사용가능하기에, 현재는 고정값을 이용
+   * Builds and sends a request buffer to read profile data from the pen.
+   * - Profiles require authorization via Neolab; currently uses fixed values.
    * @param {string} name
    * @param {Array} keys
    * @returns
@@ -816,8 +816,8 @@ export default class PenRequestV2 {
   };
 
   /**
-   * 펜에 설정된 프로파일 내 데이터 제거를 요청하기 위한 버퍼를 만들고 전송하는 함수
-   * - 프로파일은 네오랩을 통해 인증받은 뒤에 사용가능하기에, 현재는 고정값을 이용
+   * Builds and sends a request buffer to delete profile data from the pen.
+   * - Profiles require authorization via Neolab; currently uses fixed values.
    * @param {string} name
    * @param {string} password
    * @param {Array} keys
@@ -861,7 +861,7 @@ export default class PenRequestV2 {
   }
 
   /**
-   * 데이터를 zlib으로 압축하는 함수
+   * Compresses data using zlib.
    * @param {Uint8Array} data
    * @returns
    */
@@ -884,7 +884,7 @@ export default class PenRequestV2 {
   };
 
   /**
-   * 펌웨어 업데이트 파일 등을 읽을 때 비동기처리를 위한 함수
+   * Async helper for reading a file (e.g., firmware update file).
    * @param file
    * @returns
    */
@@ -904,8 +904,8 @@ export default class PenRequestV2 {
 
   // MARK: Util
   /**
-   * 만들어진 버퍼(펜에 요청을 위한 버퍼)를 펜 콘트롤러의 handleWrite로 전달하는 함수
-   * - 해당 함수가 기능하기 위해서는 handleWrite를 구현해야 한다.
+   * Delivers the built request buffer to the pen controller's handleWrite.
+   * - handleWrite must be implemented for this method to take effect.
    * @param {ByteUtil} bf
    * @returns
    */

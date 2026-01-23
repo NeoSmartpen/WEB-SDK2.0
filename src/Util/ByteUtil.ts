@@ -20,7 +20,7 @@ export default class ByteUtil {
   }
 
   /**
-   * 버퍼에 데이터를 추가하는 함수
+   * Appends a single byte to the buffer.
    * @param {number} input
    */
   PutByte(input: number) {
@@ -28,9 +28,9 @@ export default class ByteUtil {
   }
 
   /**
-   * 버퍼에 데이터를 추가하며 escape 여부를 확인하는 함수
+   * Appends a byte to the buffer and applies escaping when needed.
    * @param {number} input
-   * @param {boolean} escapeIfExist - false = 버퍼의 시작과 끝에 추가하여 escape처리를 안할 때
+   * @param {boolean} escapeIfExist - if false, do not escape (used when writing STX/ETX framing bytes)
    * @returns
    */
   Put(input: number, escapeIfExist: boolean = true) {
@@ -49,7 +49,7 @@ export default class ByteUtil {
   }
 
   /**
-   * 버퍼에 특정 크기만큼의 배열을 추가하는 함수
+   * Appends a byte array to the buffer.
    * @param {array} inputs
    * @param {number} length
    * @returns
@@ -63,7 +63,7 @@ export default class ByteUtil {
   }
 
   /**
-   * 버퍼에 특정 크기만큼 빈 값을 추가하는 함수
+   * Appends zero bytes of the given length to the buffer.
    * @param {number} length
    * @returns
    */
@@ -76,7 +76,7 @@ export default class ByteUtil {
   }
 
   /**
-   * 버퍼에 4바이트 크기의 값을 추가하는 함수
+   * Appends a 4-byte integer value to the buffer.
    * @param {number} input
    * @returns
    */
@@ -86,7 +86,7 @@ export default class ByteUtil {
   }
 
   /**
-   * 버퍼에 8바이트 크기의 값을 추가하는 함수
+   * Appends an 8-byte integer value to the buffer.
    * @param {number} input
    * @returns
    */
@@ -97,7 +97,7 @@ export default class ByteUtil {
   }
 
   /**
-   * 버퍼에 2바이트 크기의 값을 추가하는 함수
+   * Appends a 2-byte integer value to the buffer.
    * @param {number} input
    * @returns
    */
@@ -110,7 +110,7 @@ export default class ByteUtil {
   // Get
   //
   /**
-   * 버퍼에서 원하는 바이트 크기만큼의 값을 반환하고, 바이트 위치값을 수정하는 함수
+   * Reads bytes from the buffer and advances the read position.
    * @param {number} size
    * @returns
    */
@@ -128,7 +128,7 @@ export default class ByteUtil {
   }
 
   /**
-   * 버퍼에서 1바이트 크기의 값을 반환받는 함수
+   * Reads a 1-byte value from the buffer.
    * @returns
    */
   GetByte() {
@@ -136,7 +136,7 @@ export default class ByteUtil {
   }
 
   /**
-   * 버퍼에서 4바이트 크기의 값을 반환받는 함수
+   * Reads a 4-byte integer value from the buffer.
    * @returns
    */
   GetInt() {
@@ -144,7 +144,7 @@ export default class ByteUtil {
   }
 
   /**
-   * 버퍼에서 2바이트 크기의 값을 반환받는 함수
+   * Reads a 2-byte integer value from the buffer.
    * @returns
    */
   GetShort() {
@@ -152,7 +152,7 @@ export default class ByteUtil {
   }
 
   /**
-   * 버퍼에서 8바이트 크기의 값을 반환받는 함수
+   * Reads an 8-byte integer value from the buffer.
    * @returns
    */
   GetLong() {
@@ -160,7 +160,7 @@ export default class ByteUtil {
   }
 
   /**
-   * 버퍼에서 원하는 바이트 크기만큼의 값을 반환받는 함수
+   * Reads a fixed-length string from the buffer.
    * @param {number} length
    * @returns
    */
@@ -170,7 +170,7 @@ export default class ByteUtil {
   }
 
   /**
-   * 버퍼에서 원하는 위치, 바이트 크기만큼의 값을 반환받는 함수
+   * Reads a byte slice from the given offset without changing the read position.
    * @param {number} offset
    * @param {number} size
    * @returns
@@ -190,7 +190,7 @@ export default class ByteUtil {
   }
 
   /**
-   * 원하는 크기만큼의 버퍼의 검사합을 반환받는 함수
+   * Calculates a checksum over the next `length` bytes starting from the current read position.
    * @param {number} length
    * @returns
    */
@@ -206,7 +206,7 @@ export default class ByteUtil {
   }
 
   /**
-   * 버퍼 전체의 검사합을 반환받는 함수
+   * Calculates a checksum over the entire buffer.
    * @returns
    */
   GetCheckSumBF() {
@@ -218,7 +218,7 @@ export default class ByteUtil {
   }
 
   /**
-   * 원하는 버퍼의 검사합을 반환받는 함수
+   * Calculates a checksum over the given data.
    * @param {Uint8Array} data
    * @returns
    */
@@ -231,7 +231,7 @@ export default class ByteUtil {
   }
 
   /**
-   * 현 버퍼를 Uint8Array 배열로 변환 후 반환하는 함수
+   * Converts the internal buffer to a Uint8Array.
    * @returns {array}
    */
   ToU8Array() {
@@ -240,7 +240,7 @@ export default class ByteUtil {
   }
 
   /**
-   * 패킷 내 실데이터 값으로 패킷의 시작, 끝 값인 STX, ETX가 포함되어 있을 때 escape 처리를 위한 함수
+   * Escapes STX/ETX/DLE when they appear in the packet payload.
    * @param {number} input
    * @returns {array}
    */
@@ -254,7 +254,7 @@ export default class ByteUtil {
 }
 
 /**
- * byte를 16진수문자열로 변환시키는 함수
+ * Converts bytes to a hex string.
  * @param {array} bytes
  * @returns
  */
@@ -266,7 +266,7 @@ export function toHexString(bytes: Uint8Array) {
 }
 
 /**
- * section, owner를 4byte 크기의 데이터로 변환시키는 함수
+ * Converts section/owner into a 4-byte representation.
  * @param {number} section
  * @param {number} owner
  * @returns
@@ -279,7 +279,7 @@ export function GetSectionOwnerByte(section: number, owner: number) {
 
 // 4 byte array
 /**
- * 패킷에서 피상된 4byte 크기의 데이터를 노트 정보인 section, owner로 치환하는 함수
+ * Converts a 4-byte value from a packet into section/owner.
  * @param {array} bytes
  * @returns {array}
  */

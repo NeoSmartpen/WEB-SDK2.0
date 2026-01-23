@@ -27,7 +27,7 @@ function toUTF8Array(str: string): Uint8Array {
 }
 
 /**
- * 바이트 값을 정수(int)로 변환하는 함수
+ * Converts a byte array to a 32-bit unsigned integer (little-endian).
  * @param {array} bytes
  * @returns
  */
@@ -38,7 +38,7 @@ function byteArrayToInt(bytes: Uint8Array) {
 }
 
 /**
- * 정수(int)를 4바이트 크기의 배열로 변환하는 함수
+ * Converts a 32-bit unsigned integer to a 4-byte array (little-endian).
  * @param {number} input
  * @returns
  */
@@ -50,7 +50,7 @@ function intToByteArray(input: number) {
 }
 
 /**
- * 바이트 값을 정수(short)로 변환하는 함수
+ * Converts a byte array to a 16-bit unsigned integer (little-endian).
  * @param {array} bytes
  * @returns
  */
@@ -61,7 +61,7 @@ function byteArrayToShort(bytes: Uint8Array) {
 }
 
 /**
- * 정수(short)를 2바이트 크기의 배열로 변환하는 함수
+ * Converts a 16-bit unsigned integer to a 2-byte array (little-endian).
  * @param {number} input
  * @returns
  */
@@ -73,9 +73,9 @@ function shortToByteArray(input: number) {
 }
 
 /**
- * 바이트 값을 정수(long)로 변환하는 함수
+ * Converts an 8-byte array to a number (unsigned 64-bit, little-endian).
  * @param {array} bytes
- * @returns {number} bicInt64
+ * @returns {number} unsigned 64-bit value (may lose precision above 2^53 - 1)
  */
 function byteArrayToLong(bytes: Uint8Array) {
   var byte = new Uint8Array(bytes);
@@ -87,7 +87,7 @@ function byteArrayToLong(bytes: Uint8Array) {
 }
 
 /**
- * 정수(long)를 8바이트 크기의 배열로 변환하는 함수
+ * Converts a number to an 8-byte array (little-endian).
  * @param {number} input
  * @returns
  */

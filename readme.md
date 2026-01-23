@@ -11,9 +11,17 @@ $ npm install web_pen_sdk
 $ yarn add web_pen_sdk
 ```
 
+## TypeScript (types)
+TypeScript에서 SDK 타입은 패키지 루트에서 import 하세요. `dist/...` 같은 deep import 경로는 내부 구현이라 버전/빌드에 따라 변경될 수 있습니다.
+
+```ts
+import { PenHelper, PenMessageType } from "web_pen_sdk";
+import type { PageInfo, ScreenDot, VersionInfo, SettingInfo } from "web_pen_sdk";
+```
+
 ## Description
 ### **PenHelper**
-> scanPen, connectDevice, serviceBinding_16, serviceBinding_128, characteristicBinding, disconnect, dotCallback, handleDot, messageCallback, handleMessage, ncodeToScreen, ncodeToScreen_smartPlate, isSamePage
+> scanPen, connectDevice, serviceBinding_16, serviceBinding_128, characteristicBinding, disconnect, getPenByMacAddress, dotCallback, handleDot, messageCallback, handleMessage, ncodeToScreen, ncodeToScreen_smartPlate, isSamePage
 
 ### [펜 연결 설정/해제]
 
@@ -35,6 +43,7 @@ const scanPen = () => {
 
 ### 1-2. connectDevice
 실제 블루투스 장비와의 연결을 시도합니다.
+connectDevice 내부에서 service/characteristic binding까지 수행합니다. (128-bit UUID 우선, 16-bit UUID fallback)
 ```ts
 connectDevice = async (device: any) => { ... }
 ```
@@ -130,7 +139,8 @@ useEffect(() => {
 const messageProcess = (mac, type, args) => {
   switch(type) {
     case PenMessageType.PEN_SETTING_INFO:
-      const _controller = PenHelper.pens.filter((c) => c.info.MacAddress === mac)[0];
+      const _controller = PenHelper.getPenByMacAddress(mac);
+      if (!_controller) break;
       setController(_controller);  // 해당 펜의 controller를 등록해준다.
       setBattery(args.Battery);  // 배터리 상태정보를 저장 -> 충전중일 때 128로 표시
       ...

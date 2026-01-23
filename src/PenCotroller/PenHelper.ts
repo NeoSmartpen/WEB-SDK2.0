@@ -89,7 +89,7 @@ class PenHelper {
   };
 
   /**
-   * MARK: Dot Event Callback - pen에서 넘어오는 dot을 처리하기 위한 callback function
+   * MARK: Dot Event Callback - callback for handling dot events received from the pen
    *
    * @param {PenController} controller
    * @param {any} args
@@ -153,7 +153,7 @@ class PenHelper {
   };
 
   /**
-   * MARK: Pen Event Callback - Pen event 발생시 message를 처리하기 위한 로직
+   * MARK: Pen Event Callback - handles pen events and dispatches messages
    *
    * @param {any} controller
    * @param {any} type
@@ -177,7 +177,7 @@ class PenHelper {
   };
 
   /**
-   * 펜 연결을 위한 bluetooth device를 scan하는 로직
+   * Scans Bluetooth devices to connect a pen.
    *
    * @returns {boolean}
    */
@@ -217,7 +217,7 @@ class PenHelper {
   };
 
   /**
-   * Bluetooth device의 연결을 설정하는 로직
+   * Establishes a connection to the given Bluetooth device.
    *
    * @param {BluetoothDevice} device
    * @returns
@@ -249,7 +249,7 @@ class PenHelper {
   };
 
   /**
-   * Bluetooth 16bit UUID service를 binding 하기 위한 로직
+   * Binds the Bluetooth service using a 16-bit UUID.
    *
    * @param {BluetoothRemoteGATTServer} server
    * @param {BluetoothDevice} device
@@ -269,7 +269,7 @@ class PenHelper {
   };
 
   /**
-   * Bluetooth 128bit UUID service를 binding 하기 위한 로직
+   * Binds the Bluetooth service using a 128-bit UUID.
    *
    * @param {BluetoothRemoteGATTService} server
    * @param {BluetoothDevice} device
@@ -289,7 +289,7 @@ class PenHelper {
   };
 
   /**
-   * Bluetooth의 Characteristics 상태 정보를 binding 하기 위한 로직
+   * Binds Bluetooth characteristics and sets up notification/write handlers.
    *
    * @param {BluetoothRemoteGATTCharacteristic} read
    * @param {BluetoothRemoteGATTCharacteristic} write
@@ -363,7 +363,7 @@ class PenHelper {
   };
 
   /**
-   * 해당 pageInfo가 Plate paper인지 확인하기 위한 로직
+   * Checks whether the given pageInfo corresponds to Plate paper.
    *
    * @param {PageInfo} pageInfo
    * @returns {boolean}
@@ -377,7 +377,7 @@ class PenHelper {
   };
 
   /**
-   * 해당 pageInfo 가 PUI 인지 확인하기 위한 로직
+   * Checks whether the given pageInfo is PUI.
    * 
    * @param {PageInfo} pageInfo
    * @returns {boolean}
@@ -398,7 +398,7 @@ class PenHelper {
   };
 
   /**
-   * props로 받은 pageInfo들을 바탕으로 같은 page인지 확인하기 위한 로직
+   * Checks whether two pageInfo objects refer to the same page.
    *
    * @param {PageInfo} page1
    * @param {PageInfo} page2
@@ -421,7 +421,7 @@ class PenHelper {
   };
 
   /**
-   * Ncode dot 좌표를 view(Canvas) 크기에 맞춘 좌표값으로 변환하는 로직
+   * Converts ncode dot coordinates into screen coordinates based on the view (canvas) size.
    * @param {Dot} dot
    * @param {View} view
    * @param {PaperSize} paperSize
@@ -452,7 +452,7 @@ class PenHelper {
   };
 
   /**
-   * SmartPlate의 Ncode dot 좌표를 view(Canvas) 크기, angle(각도)에 맞춘 좌표값으로 변환하는 로직
+   * Converts SmartPlate ncode dot coordinates into screen coordinates based on the view (canvas) size and rotation angle.
    * @param {Dot} dot
    * @param {View} view
    * @param {number} angle - [0', 180']: landscape, [90', 270']: portrait

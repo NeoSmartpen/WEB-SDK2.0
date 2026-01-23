@@ -87,8 +87,8 @@ export default class PenClientParserV2 {
 
   // MARK: ParsePacket
   /**
-   * 전달된 패킷의 커맨드 바이트를 확인 후, 각 커맨드로 패킷을 연결시키는 함수
-   * - 패킷 파싱의 두 번째 단계, 해당 함수를 호출하기 위해서는 ProtocolParse 작업이 필요하다.
+   * Checks the command byte of the given packet and routes it to the appropriate handler.
+   * - Second stage of packet parsing; ProtocolParse must be performed before calling this method.
    * @param {Packet} packet
    * @returns
    */
@@ -330,7 +330,7 @@ export default class PenClientParserV2 {
   }
 
   /**
-   * 패킷을 반환받을 때 해당 패킷이 순차적으로 바르게 들어온 것인지 확인하는 함수
+   * Validates that the event counter is received in sequential order.
    * @param {number} ecount
    */
   CheckEventCount(ecount: number) {
@@ -367,8 +367,8 @@ export default class PenClientParserV2 {
   }
   // MARK: Parse (Up & Down)
   /**
-   * 실시간으로 펜 DOWN 시, 전달된 패킷에서 시각, 펜의 타입, 펜의 색상을 파싱하고, 펜 이벤트의 설정 값들을 초기화하는 함수
-   * - 패킷 파싱의 마지막 단계, 해당 함수를 호출하기 위해서는 ParsePacket 작업이 필요하다.
+   * On a real-time pen DOWN event, parses the timestamp, pen tip type, and pen tip color from the packet and resets pen event state.
+   * - Final stage of packet parsing; ParsePacket must be performed before calling this method.
    * @param {Packet} pk
    */
   NewPenDown(pk: Packet) {
@@ -405,9 +405,9 @@ export default class PenClientParserV2 {
   }
 
   /**
-   * 실시간으로 펜 UP 시, 전달된 패킷에서 시각, 전송 및 처리 된 도트, 이미지 개수를 파싱하고, 펜 이벤트의 설정 값들을 초기화하는 함수
-   * - 정상적으로 PenDown -> PenMove -> PenUp 의 동작을 수행했다면 Up Dot를 전달한다.
-   * - 패킷 파싱의 마지막 단계, 해당 함수를 호출하기 위해서는 ParsePacket 작업이 필요하다.
+   * On a real-time pen UP event, parses the timestamp and counts (dots/images) from the packet and resets pen event state.
+   * - If PenDown -> PenMove -> PenUp is performed normally, an UP dot is emitted.
+   * - Final stage of packet parsing; ParsePacket must be performed before calling this method.
    * @param {Packet} pk
    */
   NewPenUp(pk: Packet) {
@@ -460,9 +460,9 @@ export default class PenClientParserV2 {
   }
 
   /**
-   * 실시간으로 펜 Up, Down 시, 전달된 패킷에서 시각, 펜의 타입, 펜의 색상을 파싱하고, 펜 이벤트의 설정 값들을 초기화하는 함수
-   * - 펜 펌웨어 버전이 2.13 이전일 때 사용
-   * - 패킷 파싱의 마지막 단계, 해당 함수를 호출하기 위해서는 ParsePacket 작업이 필요하다.
+   * On a real-time pen UP/DOWN event, parses the timestamp, pen tip type, and pen tip color from the packet and resets pen event state.
+   * - Used when pen firmware version is earlier than 2.13.
+   * - Final stage of packet parsing; ParsePacket must be performed before calling this method.
    * @param {Packet} pk
    */
   PenUpDown(pk: Packet) {
@@ -504,9 +504,9 @@ export default class PenClientParserV2 {
   }
 
   /**
-   * 실시간으로 필기 데이터 전송에 실패했을 경우, 전달된 패킷에서 에러 환경에 대한 정보 값을 파싱하는 함수
-   * - 패킷 파싱의 마지막 단계, 해당 함수를 호출하기 위해서는 ParsePacket 작업이 필요하다.
-   * @param {number} cmd - packetCount 추가된 패킷인지 확인하기 위한 커맨드
+   * When real-time stroke data transmission fails, parses error context information from the packet.
+   * - Final stage of packet parsing; ParsePacket must be performed before calling this method.
+   * @param {number} cmd - command used to determine whether the packet includes packetCount
    * @param {Packet} pk
    */
   PenErrorDot(cmd: number, pk: Packet) {
@@ -551,9 +551,9 @@ export default class PenClientParserV2 {
 
   // MARK: Parse Paper
   /**
-   * 실시간으로 필기 데이터 전송 시, 전달된 패킷에서 입력된 종이의 정보(section, owner, note, page)를 파싱하는 함수
-   * - 패킷 파싱의 마지막 단계, 해당 함수를 호출하기 위해서는 ParsePacket 작업이 필요하다.
-   * @param {number} cmd - packetCount 추가된 패킷인지 확인하기 위한 커맨드
+   * During real-time stroke transmission, parses the paper info (section, owner, note, page) from the packet.
+   * - Final stage of packet parsing; ParsePacket must be performed before calling this method.
+   * @param {number} cmd - command used to determine whether the packet includes packetCount
    * @param {Packet} pk
    */
   PaperInfoEvent(cmd: number, pk: Packet) {
@@ -605,10 +605,10 @@ export default class PenClientParserV2 {
 
   // MARK: Parse Dot
   /**
-   * 실시간으로 필기 데이터 전송 시, 전달된 패킷에서 입력된 Dot의 각종 값(좌표, 기울기, 필압 등)을 파싱하는 함수
-   * - 정상적으로 PenDown -> PenMove, PageInfo 를 수행했다면 moveDot를 Move Dot를 전달한다.
-   * - 패킷 파싱의 마지막 단계, 해당 함수를 호출하기 위해서는 ParsePacket 작업이 필요하다.
-   * @param {number} cmd - packetCount 추가된 패킷인지 확인하기 위한 커맨드
+   * During real-time stroke transmission, parses dot values (coordinates, tilt, pressure, etc.) from the packet.
+   * - If PenDown -> PenMove and PageInfo are performed normally, a move dot is emitted.
+   * - Final stage of packet parsing; ParsePacket must be performed before calling this method.
+   * @param {number} cmd - command used to determine whether the packet includes packetCount
    * @param {Packet} pk
    */
   PenDotEvent(cmd: number, pk: Packet) {
@@ -741,9 +741,8 @@ export default class PenClientParserV2 {
   }
 
   /**
-   * 실시간으로 필기 데이터 전송 시, 전달된 패킷에서 호버중인 Dot의 각종 값(좌표, 기울기)을 파싱하는 함수
-   * - 정상적으로 PenDown -> PenMove, PageInfo 를 수행했다면 moveDot를 Move Dot를 전달한다.
-   * - 패킷 파싱의 마지막 단계, 해당 함수를 호출하기 위해서는 ParsePacket 작업이 필요하다.
+   * During real-time stroke transmission, parses hover dot values (coordinates, tilt) from the packet.
+   * - Final stage of packet parsing; ParsePacket must be performed before calling this method.
    * @param {Packet} pk
    */
   PenHoverEvent = (pk: Packet) => {
@@ -777,7 +776,7 @@ export default class PenClientParserV2 {
   };
 
   /**
-   * 펜의 블루투스 연결이 끊어졌을 경우, 펜 이벤트의 설정 값들을 초기화하는 함수
+   * Resets pen event state when the Bluetooth connection is disconnected.
    */
   OnDisconnected() {
     if (this.state.isStartWithDown && this.state.isBeforeMiddle && this.state.mPrevDot !== null) {
@@ -794,7 +793,7 @@ export default class PenClientParserV2 {
   }
 
   /**
-   * 펜 다운 후 도트 들어올 때 정상적인 시간 값이 아닐 경우, 펜 이벤트 설정 값들을 초기화하는 함수
+   * Resets pen event state when an invalid timestamp is detected after a pen-down event.
    */
   UpDotTimerCallback() {
     if (this.state.isStartWithDown && this.state.isBeforeMiddle && this.state.mPrevDot !== null) {
@@ -811,7 +810,7 @@ export default class PenClientParserV2 {
   }
 
   /**
-   * 펜업 이벤트를 강제로 발생시키기 위한 함수, 또한 참일 경우 에러 메시지 송출
+   * Forces a pen-up event; optionally emits an error if isError is true.
    * @param {boolean} isError
    */
   MakeUpDot(isError: boolean = true) {
@@ -832,8 +831,8 @@ export default class PenClientParserV2 {
 
   // MARK: Parse Offline
   /**
-   * 오프라인 필기 데이터 전송 시, 전달된 패킷에서 압축여부, 전송 위치, 종이 정보, 필기 데이터 등 오프라인 데이터를 파싱하는 함수
-   * - 패킷 파싱의 마지막 단계, 해당 함수를 호출하기 위해서는 ParsePacket 작업이 필요하다.
+   * During offline stroke transmission, parses offline data from the packet (compression, transfer position, paper info, stroke data, etc.).
+   * - Final stage of packet parsing; ParsePacket must be performed before calling this method.
    * @param {Packet} packet
    */
   ResOfflineData(packet: Packet) {
@@ -891,12 +890,12 @@ export default class PenClientParserV2 {
   }
 
   /**
-   * 오프라인 필기 데이터 전송 시, 오프라인 데이터 내의 stroke 데이터 (PenUpDown 시각, 펜 타입,
-   * 펜 색상, 도트 수) 및 dot 데이터 (좌표, 기울기, 필압 등)를 파싱하고 stroke 배열에 dot를 추가하는 함수
+   * During offline stroke transmission, parses stroke data (PenUp/Down timestamp, pen tip type/color, dot count) and dot data
+   * (coordinates, tilt, pressure, etc.), and appends dots to each stroke.
    * - Paper ⊃ Stroke ⊃ Dot
-   * - 해당 함수를 호출하기 위해서는 ResOfflineData 작업이 필요하다.
+   * - ResOfflineData must be performed before calling this method.
    * @param {array} u8
-   * @param {any} paper - 오프라인 데이터로 구성된 페이퍼
+   * @param {any} paper - paper object built from offline data
    */
   ParseSDK2OfflinePenData(u8: Uint8Array, paper: any) {
     // NLog.log("OfflineStrokeParser", u8);
@@ -950,11 +949,11 @@ export default class PenClientParserV2 {
 
   // NOTE: Request(Offline Receive Response)
   /**
-   * 오프라인 필기 데이터를 전송받았을 때, 전송 여부 등을 펜으로 반환하는 함수
-   * - 해당 함수를 호출하기 위해서는 ResOfflineData 작업이 필요하다.
+   * Sends an offline-receive response back to the pen (continue/stop, success/failure).
+   * - ResOfflineData must be performed before calling this method.
    * @param {number} index
    * @param {boolean} isSuccess
-   * @param {boolean} end - true일 경우 전송 중단, false일 경우 계속 전송
+   * @param {boolean} end - true to stop transfer, false to continue
    */
   ReqOfflineData2(index: number, isSuccess: boolean = true, end: boolean = false) {
     let bf = new ByteUtil();
@@ -972,7 +971,7 @@ export default class PenClientParserV2 {
 
   // NOTE: Request(PenStatus)
   /**
-   * 각종 펜 설정에 대한 정보를 요청하는 함수
+   * Requests pen setting information.
    * @returns
    */
   ReqPenStatus() {
@@ -985,7 +984,7 @@ export default class PenClientParserV2 {
 
   // NOTE: Request(SetupTime)
   /**
-   * 펜 설정 중 시각에 대해 현재 시각으로 변경을 요청하는 함수
+   * Requests to update the pen's timestamp to the current time.
    * @returns
    */
   ReqSetupTime() {
@@ -1005,8 +1004,8 @@ export default class PenClientParserV2 {
   // MARK: Parse Start(Step 1)
   /**
    * Step3 Send Data from Pen
-   * 패킷이 들어올 때, 버퍼 공간을 만들고 escape 처리를 하며 버퍼에 패킷을 전달하는 함수
-   * - 패킷 파싱의 첫 번째 단계
+   * When bytes arrive, creates a buffer, applies escape handling, and frames bytes into packets.
+   * - First stage of packet parsing.
    * @param {array} buff - uint8array
    */
   ProtocolParse(buff: Uint8Array) {
@@ -1053,9 +1052,9 @@ export default class PenClientParserV2 {
   }
 
   /**
-   * 펌웨어 업데이트를 위해 펜에서 전달된 상태와 위치값으로 펌웨어 데이터를 처리하여 Request로 전달하는 함수
+   * For firmware update, processes firmware data based on the status and offset received from the pen and forwards it to a request.
    * @param {number} offset
-   * @param {number} status - status: 0 = 시작 / 1 = 중간 / 2 = 끝 / 3 = Error
+   * @param {number} status - status: 0 = start / 1 = continue / 2 = end / 3 = error
    */
   ResponseChunkRequest(offset: number, status: number) {
     const fwBf = this.penController.mClientV2.state.fwFile as ByteUtil;
@@ -1112,7 +1111,7 @@ export default class PenClientParserV2 {
   }
 
   /**
-   * 패킷 내 실데이터 값으로 패킷의 시작, 끝 값인 STX, ETX가 포함되어 있을 때 escape 처리를 위한 함수
+   * Escapes STX/ETX/DLE when they appear in the packet payload.
    * @param {number} input
    * @returns {array}
    */
@@ -1134,8 +1133,8 @@ export default class PenClientParserV2 {
   }
 
   /**
-   * 세팅된 도트가 그려지기 위해 펜 콘트롤러의 onDot로 전달하는 함수
-   * - 해당 함수가 기능하기 위해서는 onDot를 구현해야 한다.
+   * Delivers a dot to the pen controller's onDot callback so it can be rendered/consumed.
+   * - onDot must be implemented for this method to take effect.
    * @param {Dot} dot
    */
   SendDotReceiveEvent = (dot: Dot) => {
@@ -1152,8 +1151,8 @@ export default class PenClientParserV2 {
 
   // Send to Pen
   /**
-   * 만들어진 버퍼(펜에 요청을 위한 버퍼)를 펜 콘트롤러의 handleWrite로 전달하는 함수
-   * - 해당 함수가 기능하기 위해서는 handleWrite를 구현해야 한다.
+   * Sends a built request buffer to the pen controller's handleWrite.
+   * - handleWrite must be implemented for this method to take effect.
    * @param {ByteUtil} bf
    * @returns
    */

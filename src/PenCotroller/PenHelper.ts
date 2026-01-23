@@ -206,8 +206,12 @@ class PenHelper {
 
         const server = (await device.gatt?.connect()) as BluetoothRemoteGATTServer;
         NLog.log("service", server);
-        this.serviceBinding_16(server, device);
-        this.serviceBinding_128(server, device);
+
+        // Prefer 128-bit UUID service, fallback to 16-bit UUID service.
+        const isBound = await this.serviceBinding_128(server, device);
+        if (!isBound) {
+          await this.serviceBinding_16(server, device);
+        }
       } catch (err) {
         NLog.log("err conect", err);
       } finally {
@@ -224,15 +228,17 @@ class PenHelper {
    * @param {BluetoothRemoteGATTServer} server
    * @param {BluetoothDevice} device
    */
-  serviceBinding_16 = async (server: BluetoothRemoteGATTServer, device: BluetoothDevice) => {
+  serviceBinding_16 = async (server: BluetoothRemoteGATTServer, device: BluetoothDevice): Promise<boolean> => {
     try {
       const service_16 = await server.getPrimaryService(serviceUuid);
       NLog.log("service_16", service_16);
       const characteristicNoti = await service_16.getCharacteristic(characteristicUuidNoti);
       const characteristicWrite = await service_16.getCharacteristic(characteristicUuidWrite);
-      this.characteristicBinding(characteristicNoti, characteristicWrite, device);
+      await this.characteristicBinding(characteristicNoti, characteristicWrite, device);
+      return true;
     } catch (err) {
-      NLog.log("not support service uuid", err);
+      NLog.log("not support 16bit service uuid", err);
+      return false;
     }
   };
 
@@ -242,15 +248,17 @@ class PenHelper {
    * @param {BluetoothRemoteGATTService} server
    * @param {BluetoothDevice} device
    */
-  serviceBinding_128 = async (server: BluetoothRemoteGATTServer, device: BluetoothDevice) => {
+  serviceBinding_128 = async (server: BluetoothRemoteGATTServer, device: BluetoothDevice): Promise<boolean> => {
     try {
       const service_128 = await server.getPrimaryService(PEN_SERVICE_UUID_128);
       NLog.log("service_128", service_128);
       const characteristicNoti = await service_128.getCharacteristic(PEN_CHARACTERISTICS_NOTIFICATION_UUID_128);
       const characteristicWrite = await service_128.getCharacteristic(PEN_CHARACTERISTICS_WRITE_UUID_128);
-      this.characteristicBinding(characteristicNoti, characteristicWrite, device);
+      await this.characteristicBinding(characteristicNoti, characteristicWrite, device);
+      return true;
     } catch (err) {
-      NLog.log("not support service uuid", err);
+      NLog.log("not support 128bit service uuid", err);
+      return false;
     }
   };
 

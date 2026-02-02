@@ -328,8 +328,11 @@ export default class PUIController {
   }
 
   private getPuiXML = async (url: string) => {
-    const res = await fetch(url);
-    const nprojXml = await res.text();
+    const trimmed = url?.trim?.() ?? "";
+
+    const looksLikeXml = trimmed.startsWith("<?xml") || trimmed.startsWith("<nproj") || trimmed.startsWith("<");
+
+    const nprojXml = looksLikeXml ? url : await (await fetch(url)).text();
     // console.log(nprojXml);
 
     // book 정보

@@ -6,12 +6,12 @@ import Dot from "../API/Dot";
 import CMD from "./CMD";
 import CONST from "./Const";
 import * as Res from "../Model/Response";
-import zlib from "zlib";
 import PenMessageType, { SettingType, PenTipType, ErrorType, FirmwareStatusType } from "../API/PenMessageType";
 import PenController from "./PenController";
 import DotFilter from "../Util/DotFilter";
 import { VersionInfo, SettingInfo, Paper } from "../Util/type";
 import PUIController, { isPUI, isPUIOnPage } from "../API/PUIController";
+import { unzipAsync } from "../Util/compression";
 
 type IPenState = {
   first: boolean;
@@ -862,15 +862,14 @@ export default class PenClientParserV2 {
     // NLog.log("offlineData info", offlineInfo);
     if (isCompressed) {
       let u8 = new Uint8Array(data);
-      zlib.unzip(u8, (err, res) => {
-        if (!err) {
+      unzipAsync(u8)
+        .then((unzipU8) => {
           // NLog.log("Offline zip file received successfully");
-          let unzipU8 = new Uint8Array(res);
           this.ParseSDK2OfflinePenData(unzipU8, Paper);
-        } else {
+        })
+        .catch((err) => {
           NLog.log("unzip error", err);
-        }
-      });
+        });
     } else {
       // NLog.log("not compressed Offline file received successfully");
       let u8 = new Uint8Array(data);

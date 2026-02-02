@@ -2,14 +2,27 @@ const path = require('path');
 
 module.exports = {
   mode: 'production',
-  entry: './lib/index.js',
+  entry: './dist/index.js',
+  resolve: {
+    fallback: {
+      zlib: false,
+    },
+  },
   output: {
     filename: 'pensdk.js',
     path: path.resolve(__dirname, 'dist'),
-    library:"PenSDK"
+    library: {
+      name: 'PenSDK',
+      type: 'umd',
+    },
+    globalObject: 'this',
   },
   module: {
     rules: [
+      {
+        test: /\.nproj$/,
+        type: 'asset/source',
+      },
       { 
         test: /\.m?js$/,
         exclude: /(node_modules|bower_components)/,

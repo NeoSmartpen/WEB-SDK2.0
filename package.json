@@ -12,13 +12,14 @@
     "Test"
   ],
   "scripts": {
-    "start": "node examples/server.js",
-    "build:webpack": "rm -rf dist && webpack",
+    "dev": "tsc -w -p tsconfig.json",
+    "start": "npm run dev",
+    "build:webpack": "npm run build && webpack",
     "build": "rm -rf dist && tsc && npm run convertNPROJ && cp -r ./src/API/nproj ./dist/API/nproj",
     "test": "jest",
-    "clean": "rm -rf dist & rm -rf node_modules & rm package-lock.json & rm yarn.lock",
-    "prepare": "yarn build",
-    "deploy": "yarn publish",
+    "clean": "rm -rf dist && rm -rf node_modules && rm -f package-lock.json yarn.lock",
+    "prepare": "npm run build",
+    "deploy": "npm publish",
     "convertNPROJ": "node ./src/Util/converterNPROJ.js"
   },
   "repository": {

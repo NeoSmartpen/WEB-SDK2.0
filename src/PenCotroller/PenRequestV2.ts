@@ -3,7 +3,7 @@ import * as Converter from "../Util/Converter";
 import * as NLog from "../Util/NLog";
 import CMD from "./CMD";
 import CONST from "./Const";
-import zlib from "zlib";
+import { deflateAsync } from "../Util/compression";
 
 import { FirmwareStatusType, ProfileType, SettingType } from "../API/PenMessageType";
 import { PenController } from "..";
@@ -867,20 +867,13 @@ export default class PenRequestV2 {
    */
   Compress = async (data: Uint8Array) => {
     const input = new Uint8Array(data);
-    let compressData = new Uint8Array();
 
-    return new Promise((resolve, reject) => {
-      zlib.deflate(input, { level: 9 }, async (err, res) => {
-        if (!err) {
-          const zipU8 = new Uint8Array(res);
-          compressData = zipU8;
-          resolve(compressData);
-        } else {
-          NLog.log("zip error", err);
-          reject(err);
-        }
-      });
-    });
+    try {
+      return await deflateAsync(input, 9);
+    } catch (err) {
+      NLog.log("zip error", err);
+      throw err;
+    }
   };
 
   /**

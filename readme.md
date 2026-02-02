@@ -23,6 +23,27 @@ import type { PageInfo, ScreenDot, VersionInfo, SettingInfo } from "web_pen_sdk"
 ### **PenHelper**
 > scanPen, connectDevice, serviceBinding_16, serviceBinding_128, characteristicBinding, disconnect, getPenByMacAddress, dotCallback, handleDot, messageCallback, handleMessage, ncodeToScreen, ncodeToScreen_smartPlate, isSamePage
 
+## NoteServer configuration (Firebase)
+`NoteServer` can fetch `.nproj`/image resources via Firebase Storage when you don’t pass an explicit `url`.
+
+- Recommended: pass a direct `url` if you already have one (no Firebase config needed)
+- Or configure Firebase once in your app:
+
+```ts
+import { NoteServer } from "web_pen_sdk";
+
+NoteServer.configureFirebase({
+  apiKey: "...",
+  authDomain: "...",
+  projectId: "...",
+  storageBucket: "...",
+  messagingSenderId: "...",
+  appId: "...",
+});
+```
+
+If you prefer env-based config, set `FIREBASE_API_KEY`, `FIREBASE_PROJECT_ID`, `FIREBASE_STORAGEBUCKET`, etc.
+
 ### [펜 연결 설정/해제]
 
 ### 1-1. scanPen
@@ -433,7 +454,11 @@ const path = new Path(screenDot.x, screenDot.y);
  * Set the information for the PUI icon on the page
  * Async-await calls are optional, as they are not directly utilized on page changes
  */ 
-(await) NoteServer.setNprojInPuiController(pageInfo)
+// If you already have the nproj URL:
+(await) NoteServer.setNprojInPuiController(nprojUrl, pageInfo);
+
+// Or, let NoteServer resolve it via Firebase (requires `NoteServer.configureFirebase(...)`):
+(await) NoteServer.setNprojInPuiController(null, pageInfo);
 ```
 
 <br />

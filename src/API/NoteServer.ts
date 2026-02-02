@@ -1,20 +1,68 @@
 import { PageInfo } from "../Util/type";
-import { initializeApp } from "firebase/app";
+import type { FirebaseApp, FirebaseOptions } from "firebase/app";
+import { getApp, getApps, initializeApp } from "firebase/app";
 import * as NLog from "../Util/NLog";
 
 import { getStorage, ref, getDownloadURL } from "firebase/storage";
 import JSZip from "jszip";
 import PUIController from "./PUIController";
 
-const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  databaseURL: process.env.FIREBASE_DATABASE_URL,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  storageBucket: process.env.FIREBASE_STORAGEBUCKET,
-  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.FIREBASE_APP_ID,
-  measurementId: process.env.FIREBASE_MEASUREMENT_ID,
+export type NoteServerFirebaseConfig = FirebaseOptions;
+
+let configuredFirebaseConfig: FirebaseOptions | null = null;
+let cachedFirebaseApp: FirebaseApp | null = null;
+
+export const configureFirebase = (config: FirebaseOptions) => {
+  configuredFirebaseConfig = config;
+  cachedFirebaseApp = null;
+};
+
+export const resetFirebase = () => {
+  configuredFirebaseConfig = null;
+  cachedFirebaseApp = null;
+};
+
+const getEnvFirebaseConfig = (): FirebaseOptions | null => {
+  const env = (typeof process !== "undefined" ? (process as any)?.env : undefined) ??
+    (globalThis as any)?.process?.env;
+
+  if (!env) return null;
+
+  const config: FirebaseOptions = {
+    apiKey: env.FIREBASE_API_KEY,
+    authDomain: env.FIREBASE_AUTH_DOMAIN,
+    databaseURL: env.FIREBASE_DATABASE_URL,
+    projectId: env.FIREBASE_PROJECT_ID,
+    storageBucket: env.FIREBASE_STORAGEBUCKET,
+    messagingSenderId: env.FIREBASE_MESSAGING_SENDER_ID,
+    appId: env.FIREBASE_APP_ID,
+    measurementId: env.FIREBASE_MEASUREMENT_ID,
+  };
+
+  // If the env is not configured, prevent initializeApp from throwing cryptic errors later.
+  if (!config.apiKey || !config.projectId || !config.storageBucket) return null;
+
+  return config;
+};
+
+const getFirebaseApp = () => {
+  if (cachedFirebaseApp) return cachedFirebaseApp;
+
+  // If the host app already initialized Firebase, reuse it.
+  if (getApps().length > 0) {
+    cachedFirebaseApp = getApp();
+    return cachedFirebaseApp;
+  }
+
+  const config = configuredFirebaseConfig ?? getEnvFirebaseConfig();
+  if (!config) {
+    throw new Error(
+      "[NoteServer] Firebase config is missing. Provide an explicit `url` argument, or call `NoteServer.configureFirebase(...)`, or set FIREBASE_* env vars (apiKey/projectId/storageBucket...)."
+    );
+  }
+
+  cachedFirebaseApp = initializeApp(config);
+  return cachedFirebaseApp;
 };
 
 // Ncode Formula
@@ -27,16 +75,24 @@ const point72ToNcode = (p: number) => {
 };
 
 /**
- * Set Note Page PUI in PUIController
+ * Sets PUI symbols for the given page in `PUIController`.
+ *
+ * @param url - A URL (or raw XML string) of an `.nproj` file.
+ *   - Recommended: pass a fully-qualified URL that `fetch()` can read (CORS allowed).
+ *     Example: a Firebase Storage download URL that ends with `.../{section}_{owner}_{book}.nproj`.
+ *   - If `null`/`undefined`, `NoteServer` will resolve
+ *     `nproj/{section}_{owner}_{book}.nproj` from Firebase Storage using your Firebase config.
+ *     In that case call `NoteServer.configureFirebase(...)` (or set `FIREBASE_*` env vars).
+ *
+ * @param pageInfo - Target page information (`{ section, owner, book, page }`).
  */
-const setNprojInPuiController = async (url: string | null, pageInfo: PageInfo) => {
+const setNprojInPuiController = async (url: string | null | undefined, pageInfo: PageInfo) => {
   let nprojUrl = url;
   if (!nprojUrl) {
     try {
       const sobStr = `${pageInfo.section}_${pageInfo.owner}_${pageInfo.book}.nproj`;
     
-      const fbApp = initializeApp(firebaseConfig);
-      const storage = getStorage(fbApp);
+      const storage = getStorage(getFirebaseApp());
     
       nprojUrl = await getDownloadURL(ref(storage, `nproj/${sobStr}`));
     } catch (err) {
@@ -59,8 +115,7 @@ const extractMarginInfo = async (url: string | null, pageInfo: PageInfo) => {
   let nprojUrl = url;
   if (!nprojUrl) {
     try {
-      const fbApp = initializeApp(firebaseConfig);
-      const storage = getStorage(fbApp);
+      const storage = getStorage(getFirebaseApp());
     
       nprojUrl = await getDownloadURL(ref(storage, `nproj/${sobStr}`));
     } catch (err) {
@@ -129,8 +184,7 @@ const getNoteImage = async (pageInfo: PageInfo, setImageBlobUrl: any) => {
   const sobStr = `/${pageInfo.section}_${pageInfo.owner}_${pageInfo.book}.zip`;
   const page = pageInfo.page;
 
-  const fbApp = initializeApp(firebaseConfig);
-  const storage = getStorage(fbApp);
+  const storage = getStorage(getFirebaseApp());
 
   const jszip = new JSZip();
   await getDownloadURL(ref(storage, `png/${sobStr}`)).then(async (url) => {
@@ -159,6 +213,8 @@ const api = {
   extractMarginInfo,
   getNoteImage,
   setNprojInPuiController,
+  configureFirebase,
+  resetFirebase,
 };
 
 export default api;

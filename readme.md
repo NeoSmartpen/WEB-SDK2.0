@@ -1,27 +1,74 @@
-# Neo smartpen SDK for Web Platform
+# Neo Smartpen Web SDK (`web_pen_sdk`)
 
-# Web Pen SDK
-This document is written to be used the web_pen_sdk for NeoSmartPen.<br />
+A TypeScript SDK to connect Neo Smartpen devices from the browser (Web Bluetooth) and handle pen events/dots.
 
-## Installation 
-``` sh
-# web_pen_sdk setting
+> This README contains both English and Korean sections. If you’re new, start from “Quick Start”.
 
-$ npm install web_pen_sdk
-$ yarn add web_pen_sdk
+---
+
+## Table of Contents
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [TypeScript types](#typescript-types)
+- [NoteServer configuration (Firebase)](#noteserver-configuration-firebase)
+- [Detailed reference (legacy)](#detailed-reference-legacy)
+- [Sample](#sample)
+- [Docs](#docs)
+- [License](#license)
+- [Release notes](#release-notes)
+
+## Requirements
+- A Web Bluetooth capable browser (Chrome / Edge on desktop)
+- Secure context: HTTPS (or `http://localhost`)
+- `navigator.bluetooth.requestDevice(...)` must be triggered by a user gesture (click/tap)
+- iOS Safari / most in-app WebViews do **not** support Web Bluetooth
+
+## Installation
+```sh
+npm install web_pen_sdk
+# or
+yarn add web_pen_sdk
 ```
 
-## TypeScript (types)
-TypeScript에서 SDK 타입은 패키지 루트에서 import 하세요. `dist/...` 같은 deep import 경로는 내부 구현이라 버전/빌드에 따라 변경될 수 있습니다.
+## Quick Start
+```ts
+import { PenHelper, PenMessageType, DotTypes } from "web_pen_sdk";
+import type { PenDotEvent } from "web_pen_sdk";
+
+PenHelper.messageCallback = (mac, type, args) => {
+  if (type === PenMessageType.PEN_CONNECTION_SUCCESS) {
+    console.log("connected:", mac);
+  }
+};
+
+PenHelper.dotCallback = (mac, dot: PenDotEvent) => {
+  if (dot.dotType === DotTypes.PEN_DOWN) {
+    console.log("down:", mac, dot);
+  }
+};
+
+export const connectPen = async () => {
+  // Must be called inside a click/tap handler.
+  await PenHelper.scanPen();
+};
+```
+
+## TypeScript types
+Import SDK types from the package root. Deep import paths like `dist/...` are internal implementation details and may change across versions/builds.
 
 ```ts
-import { PenHelper, PenMessageType } from "web_pen_sdk";
-import type { PageInfo, ScreenDot, VersionInfo, SettingInfo } from "web_pen_sdk";
+import { PenHelper, PenMessageType, DotTypes } from "web_pen_sdk";
+import type {
+  PenDotCallback,
+  PenMessageCallback,
+  PenDotEvent,
+  PageInfo,
+  ScreenDot,
+  VersionInfo,
+  SettingInfo,
+} from "web_pen_sdk";
 ```
-
-## Description
-### **PenHelper**
-> scanPen, connectDevice, serviceBinding_16, serviceBinding_128, characteristicBinding, disconnect, getPenByMacAddress, dotCallback, handleDot, messageCallback, handleMessage, ncodeToScreen, ncodeToScreen_smartPlate, isSamePage
 
 ## NoteServer configuration (Firebase)
 `NoteServer` can fetch `.nproj`/image resources via Firebase Storage when you don’t pass an explicit `url`.
@@ -43,6 +90,13 @@ NoteServer.configureFirebase({
 ```
 
 If you prefer env-based config, set `FIREBASE_API_KEY`, `FIREBASE_PROJECT_ID`, `FIREBASE_STORAGEBUCKET`, etc.
+
+## Detailed reference (legacy)
+<details>
+<summary>Open detailed API docs (Korean)</summary>
+
+### **PenHelper**
+> scanPen, connectDevice, serviceBinding_16, serviceBinding_128, characteristicBinding, disconnect, getPenByMacAddress, dotCallback, handleDot, messageCallback, handleMessage, ncodeToScreen, ncodeToScreen_smartPlate, isSamePage
 
 ### [펜 연결 설정/해제]
 
@@ -463,16 +517,21 @@ const path = new Path(screenDot.x, screenDot.y);
 
 <br />
 
-## 🐾 Sample Page
-> https://github.com/NeoSmartpen/WEB-SDK-Sample
+</details>
 
-## 📑 web_pen_sdk 공식문서
-> ### [Google Docs](https://docs.google.com/document/d/12ZSPQ-CVEOq4yxvNn2jcI9L_SZ01zJkMvbWBVfJCHWQ/edit?usp=sharing)
+## Sample
+- https://github.com/NeoSmartpen/WEB-SDK-Sample
 
-## 📜 License
-#### **Copyright(c) 2022, NeoLAB Convergence INC. No license allowed.**
+## Docs
+- Google Docs: https://docs.google.com/document/d/12ZSPQ-CVEOq4yxvNn2jcI9L_SZ01zJkMvbWBVfJCHWQ/edit?usp=sharing
 
-<br />
+## License
+- Copyright (c) 2026, NeoLAB Convergence INC.
+- Licensed under GPL-3.0-only. See `LICENSE.txt`.
+
+## Release notes
+<details>
+<summary>Open release notes</summary>
 
 Release Note
 =====
@@ -587,3 +646,4 @@ Release Note
 -----
 ### Updates
 - **Fix** - 펌웨어 업데이트 시 모든 디바이스는 압축 없이 하도록 수정
+</details>

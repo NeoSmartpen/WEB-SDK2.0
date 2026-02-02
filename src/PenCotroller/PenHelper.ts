@@ -1,6 +1,6 @@
 import PenController from "./PenController";
 import PenMessageType from "../API/PenMessageType";
-import { Dot, PageInfo, PageInfo2, View, Options, PaperSize } from "../Util/type";
+import { Dot as NcodeDot, PageInfo, PageInfo2, View, Options, PaperSize } from "../Util/type";
 import * as NLog from "../Util/NLog";
 import { SDKversion } from "../Util/SDKVersion";
 
@@ -12,12 +12,40 @@ const PEN_SERVICE_UUID_128 = "4f99f138-9d53-5bfa-9e50-b147491afe68";
 const PEN_CHARACTERISTICS_NOTIFICATION_UUID_128 = "64cd86b1-2256-5aeb-9f04-2caf6c60ae57";
 const PEN_CHARACTERISTICS_WRITE_UUID_128 = "8bc8cc7d-88ca-56b0-af9a-9bf514d0d61a";
 
+export type PenPageInfo = Partial<PageInfo> &
+  Partial<PageInfo2> & {
+    section?: number;
+    owner?: number;
+    page?: number;
+    book?: number;
+    note?: number;
+  };
+
+export type PenDotEvent = Partial<NcodeDot> & {
+  pageInfo?: PenPageInfo;
+  section?: number;
+  owner?: number;
+  book?: number;
+  note?: number;
+  page?: number;
+  dotType?: number;
+  DotType?: number;
+  isPlate?: boolean;
+  [key: string]: any;
+};
+
+type MaybePromise<T = unknown> = T | Promise<T>;
+
+export type PenDotCallback = (mac: string, dot: PenDotEvent) => MaybePromise;
+export type PenPageCallback = (dot: PenDotEvent) => MaybePromise;
+export type PenMessageCallback = (mac: string, type: number, args: any) => MaybePromise;
+
 class PenHelper {
   pens: PenController[];
   connectingQueue: string[];
-  dotCallback: any;
-  pageCallback: any;
-  messageCallback: any;
+  dotCallback: PenDotCallback | null | undefined;
+  pageCallback: PenPageCallback | null | undefined;
+  messageCallback: PenMessageCallback | null | undefined;
   d: PageInfo2;
   dotStorage: any;
   mac: string;
@@ -94,7 +122,7 @@ class PenHelper {
    * @param {PenController} controller
    * @param {any} args
    */
-  handleDot = (controller: PenController, args: any) => {
+  handleDot = (controller: PenController, args: PenDotEvent) => {
     const mac = controller.info.MacAddress;
     this.mac = mac;
     const dot = args;
@@ -427,7 +455,7 @@ class PenHelper {
    * @param {PaperSize} paperSize
    * @returns {Dot}
    */
-  ncodeToScreen = (dot: Dot, view: View, paperSize: PaperSize) => {
+  ncodeToScreen = (dot: NcodeDot, view: View, paperSize: PaperSize) => {
     let paperBase, paperWidth, paperHeight;
     paperBase = { Xmin: paperSize.Xmin, Ymin: paperSize.Ymin }; // ncode paper의 margin 값
     paperWidth = paperSize.Xmax - paperSize.Xmin; // ncode paper의 가로길이
@@ -459,7 +487,7 @@ class PenHelper {
    * @param {PaperSize} paperSize
    * @returns {Dot}
    */
-  ncodeToScreen_smartPlate = (dot: Dot, view: View, angle: number, paperSize: PaperSize) => {
+  ncodeToScreen_smartPlate = (dot: NcodeDot, view: View, angle: number, paperSize: PaperSize) => {
     let paperBase, paperWidth, paperHeight;
     paperBase = { Xmin: paperSize.Xmin, Ymin: paperSize.Ymin };
     paperWidth = paperSize.Xmax - paperSize.Xmin;

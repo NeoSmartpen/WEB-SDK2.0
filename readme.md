@@ -54,6 +54,46 @@ export const connectPen = async () => {
 };
 ```
 
+## Dot structure
+
+### `PenDotEvent` (received via `dotCallback`)
+
+| Field | Type | Description |
+|---|---|---|
+| `pageInfo` | `{ section, owner, book, page }` | Ncode page address |
+| `x` | `number` | Ncode X coordinate |
+| `y` | `number` | Ncode Y coordinate |
+| `f` | `number` | Pen pressure (force) |
+| `dotType` | `number` | Dot type (see `DotTypes` below) |
+| `timeStamp` | `number` | Absolute timestamp (ms) |
+| `timeDiff` | `number` | Time delta from previous dot (ms) |
+| `penTipType` | `number` | `0`: Normal, `1`: Eraser |
+| `color` | `number` | Pen color (default `0x000000ff`) |
+| `angle` | `{ tx, ty, twist }` | Pen tilt and twist |
+| `section` | `number?` | Shorthand for `pageInfo.section` |
+| `owner` | `number?` | Shorthand for `pageInfo.owner` |
+| `book` / `note` | `number?` | Notebook number |
+| `page` | `number?` | Page number |
+| `isPlate` | `boolean?` | Whether the dot is from a SmartPlate |
+
+### `DotTypes`
+
+| Value | Name | Description |
+|---|---|---|
+| 0 | `PEN_DOWN` | Pen touched the paper |
+| 1 | `PEN_MOVE` | Pen moving on the paper |
+| 2 | `PEN_UP` | Pen lifted from the paper |
+| 3 | `PEN_HOVER` | Hovering (not touching) |
+| 4 | `PEN_INFO` | Pen info |
+| 5 | `PEN_ERROR` | Error |
+
+### `ScreenDot` (return type of `ncodeToScreen` / `ncodeToScreen_smartPlate`)
+
+| Field | Type | Description |
+|---|---|---|
+| `x` | `number` | Transformed screen X coordinate |
+| `y` | `number` | Transformed screen Y coordinate |
+
 ## TypeScript types
 Import SDK types from the package root. Deep import paths like `dist/...` are internal implementation details and may change across versions/builds.
 
@@ -253,6 +293,48 @@ const onPasswordRequired = (args: any) => {
 ```ts
 handleDot = (controller: any, args: any) => { ... }
 ```
+
+#### Dot 객체 구조 (`PenDotEvent`)
+
+`dotCallback`으로 전달되는 dot 객체의 필드는 다음과 같습니다.
+
+| 필드 | 타입 | 설명 |
+|---|---|---|
+| `pageInfo` | `{ section, owner, book, page }` | ncode 페이지 정보 |
+| `x` | `number` | ncode X 좌표 |
+| `y` | `number` | ncode Y 좌표 |
+| `f` | `number` | 필압 (force) |
+| `dotType` | `number` | dot 종류 (아래 `DotTypes` 참조) |
+| `timeStamp` | `number` | 절대 타임스탬프 (ms) |
+| `timeDiff` | `number` | 이전 dot과의 시간 차이 (ms) |
+| `penTipType` | `number` | `0`: Normal, `1`: Eraser |
+| `color` | `number` | 펜 색상 (기본값 `0x000000ff`) |
+| `angle` | `{ tx, ty, twist }` | 펜 기울기 및 비틀림 |
+| `section` | `number?` | `pageInfo.section` 편의 접근 |
+| `owner` | `number?` | `pageInfo.owner` 편의 접근 |
+| `book` / `note` | `number?` | 노트 번호 |
+| `page` | `number?` | 페이지 번호 |
+| `isPlate` | `boolean?` | SmartPlate 여부 |
+
+#### DotTypes
+
+| 값 | 이름 | 설명 |
+|---|---|---|
+| 0 | `PEN_DOWN` | 펜이 종이에 닿은 순간 |
+| 1 | `PEN_MOVE` | 펜이 종이 위에서 이동 중 |
+| 2 | `PEN_UP` | 펜이 종이에서 떨어진 순간 |
+| 3 | `PEN_HOVER` | 호버 (종이에 닿지 않은 상태) |
+| 4 | `PEN_INFO` | 펜 정보 |
+| 5 | `PEN_ERROR` | 에러 |
+
+#### ScreenDot (좌표 변환 결과)
+
+`ncodeToScreen` / `ncodeToScreen_smartPlate`의 반환값입니다.
+
+| 필드 | 타입 | 설명 |
+|---|---|---|
+| `x` | `number` | 변환된 화면 X 좌표 |
+| `y` | `number` | 변환된 화면 Y 좌표 |
 
 ### 3-2. ncodeToScreen
 일반적인 ncode dot 좌표값을 view에 보여지게 하기 위하여 view size에 맞춰 변환시키는 로직입니다.

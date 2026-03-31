@@ -1,5 +1,6 @@
 import PenClientParserV2 from "./PenClientParserV2";
 import * as Error from "../Model/SDKError";
+import * as NLog from "../Util/NLog";
 import PenMessageType from "../API/PenMessageType";
 import PenRequestV2 from "./PenRequestV2";
 import Dot from "../API/Dot";
@@ -244,6 +245,24 @@ export default class PenController {
     this.Request(
       () => this.mClientV1.ReqSetupPenSensitivity(step),
       () => this.mClientV2.ReqSetupPenSensitivity(step)
+    );
+  }
+
+  /**
+   * Requests to change pen pressure sensitivity (FSC).
+   * - Available only on models with an FSC pressure sensor.
+   * - Blocked when PenSensitivity is 255.
+   * @param {number} step - 0 ~ 100
+   */
+  SetFscSensitivity(step: number) {
+    const penSensitivity = this.mParserV2.penSettingInfo.PenSensitivity;
+    if (penSensitivity === 255) {
+      NLog.log("[PenController] SetFscSensitivity is not supported on this pen.");
+      throw new Error.SDKError("SensitivityIsFixed");
+    }
+    this.Request(
+      null,
+      () => this.mClientV2.ReqSetupPenFscSensitivity(step)
     );
   }
 

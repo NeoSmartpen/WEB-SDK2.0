@@ -1,5 +1,6 @@
 import PenClientParserV2 from "./PenClientParserV2";
 import * as Error from "../Model/SDKError";
+import * as NLog from "../Util/NLog";
 import PenMessageType from "../API/PenMessageType";
 import PenRequestV2 from "./PenRequestV2";
 import Dot from "../API/Dot";
@@ -256,8 +257,8 @@ export default class PenController {
   SetFscSensitivity(step: number) {
     const penSensitivity = this.mParserV2.penSettingInfo.PenSensitivity;
     if (penSensitivity === 255) {
-      console.warn("[PenController] SetFscSensitivity is not supported on this pen.");
-      return;
+      NLog.log("[PenController] SetFscSensitivity is not supported on this pen.");
+      throw new Error.SDKError("SensitivityIsFixed");
     }
     this.Request(
       null,

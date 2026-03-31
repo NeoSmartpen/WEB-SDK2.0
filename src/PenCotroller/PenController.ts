@@ -248,6 +248,24 @@ export default class PenController {
   }
 
   /**
+   * Requests to change pen pressure sensitivity (FSC).
+   * - Available only on models with an FSC pressure sensor.
+   * - Blocked when PenSensitivity is 255.
+   * @param {number} step - 0 ~ 100
+   */
+  SetFscSensitivity(step: number) {
+    const penSensitivity = this.mParserV2.penSettingInfo.PenSensitivity;
+    if (penSensitivity === 255) {
+      console.warn("[PenController] SetFscSensitivity is not supported on this pen.");
+      return;
+    }
+    this.Request(
+      null,
+      () => this.mClientV2.ReqSetupPenFscSensitivity(step)
+    );
+  }
+
+  /**
    * Requests to initialize the pen disk.
    */
   RequestInitPenDisk() {

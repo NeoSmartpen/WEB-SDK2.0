@@ -88,6 +88,7 @@ type SettingInfo = {
   HoverMode: boolean;
   Beep: boolean;
   PenSensitivity: number;
+  FscSensitivity: number;
 };
 
 type DotErrorInfo = {

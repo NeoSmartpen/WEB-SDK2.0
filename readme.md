@@ -608,8 +608,24 @@ const path = new Path(screenDot.x, screenDot.y);
 - Google Docs: https://docs.google.com/document/d/12ZSPQ-CVEOq4yxvNn2jcI9L_SZ01zJkMvbWBVfJCHWQ/edit?usp=sharing
 
 ## License
-- Copyright (c) 2026, NeoLAB Convergence INC.
-- Licensed under GPL-3.0-only. See `LICENSE.txt`.
+Copyright©2017 by NeoLAB Convergence, Inc. All page content is property of NeoLAB Convergence Inc. https://neolab.net
+
+GPL License v3 - for non-commercial purpose
+For non-commercial use, follow the terms of the GNU General Public License.
+
+GPL License v3 is a free software: you can run, copy, redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with the program. If not, see https://www.gnu.org/licenses/.
+
+Commercial license - for commercial purpose
+For commercial use, it is not necessary or required to open up your source code. Technical support from NeoLAB Convergence, inc is available upon your request.
+
+Please contact our support team via email for the terms and conditions of this license.
+
+Global: global@neolab.net
+Korea: biz1@neolab.net
 
 ## Release notes
 <details>
